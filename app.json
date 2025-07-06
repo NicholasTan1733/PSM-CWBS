@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "CWBS",
+    "slug": "CWBS",
+    "version": "2.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/app.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/app.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app uses location to find nearby car wash shops and provide better service recommendations.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses location to find nearby car wash shops and provide better service recommendations."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/app.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/app.png"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Swift Car Wash to use your location to find nearby car wash shops and provide better service recommendations."
+        }
+      ]
+    ]
+  }
+}
