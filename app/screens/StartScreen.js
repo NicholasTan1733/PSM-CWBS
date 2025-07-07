@@ -19,8 +19,7 @@ export default function StartScreen({ navigation }) {
           Book your car wash service with ease, track appointments, and enjoy a hassle-free experience.
         </Paragraph>
       </View>
-      
-      {/* Single Login Button for All User Types */}
+
       <Button
         mode="contained"
         onPress={() => navigation.navigate("LoginScreen")}

@@ -36,9 +36,8 @@ import {
   signOut 
 } from "../../../firebase/firebase";
 
-// Define Admin theme colors
 const adminTheme = {
-  primary: '#8e44ad', // Purple
+  primary: '#8e44ad',
   primaryLight: '#F3E5F5',
   primaryDark: '#6A1B9A',
   surface: '#FAF5FF',
@@ -63,8 +62,6 @@ export default function AdminDashboardScreen({ navigation }) {
 
   useEffect(() => {
     loadDashboardData();
-    
-    // Refresh when navigating back from settings
     const unsubscribe = navigation.addListener('focus', () => {
       loadDashboardData();
     });
@@ -79,8 +76,6 @@ export default function AdminDashboardScreen({ navigation }) {
   const loadDashboardData = async () => {
     try {
       const userData = await getUserData();
-      
-      // Include settings in shopData
       const shopDataWithSettings = {
         ...userData,
         settings: userData.settings || {}
@@ -141,7 +136,6 @@ export default function AdminDashboardScreen({ navigation }) {
         break;
     }
 
-    // Sort by time
     filtered.sort((a, b) => {
       const timeA = moment(`${a.date} ${a.time}`, "YYYY-MM-DD HH:mm");
       const timeB = moment(`${b.date} ${b.time}`, "YYYY-MM-DD HH:mm");
@@ -302,7 +296,6 @@ export default function AdminDashboardScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <View style={styles.shopInfo}>
@@ -346,7 +339,6 @@ export default function AdminDashboardScreen({ navigation }) {
           </Menu>
         </View>
 
-        {/* Stats Cards */}
         <ScrollView 
           horizontal 
           showsHorizontalScrollIndicator={false} 
@@ -378,7 +370,6 @@ export default function AdminDashboardScreen({ navigation }) {
         </ScrollView>
       </View>
 
-      {/* Tab Filters */}
       <View style={styles.tabContainer}>
         {[
           { key: 'today', label: 'Today', icon: 'calendar-today' },
@@ -411,7 +402,6 @@ export default function AdminDashboardScreen({ navigation }) {
         ))}
       </View>
 
-      {/* Bookings List */}
       <FlatList
         data={filteredBookings}
         renderItem={renderBookingItem}
@@ -439,7 +429,6 @@ export default function AdminDashboardScreen({ navigation }) {
         }
       />
 
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={[styles.navItem, styles.activeNavItem]}>
           <MaterialCommunityIcons name="view-dashboard" size={24} color={adminTheme.primary} />

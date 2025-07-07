@@ -16,11 +16,8 @@ export default function ShopDetailsScreen({ route, navigation }) {
   const [shopServices, setShopServices] = useState([]);
 
   useEffect(() => {
-    // Find shop details
     const selectedShop = shops.find(s => s.id === shopId);
     setShop(selectedShop);
-    
-    // Get services for this shop
     if (selectedShop && services[selectedShop.id]) {
       setShopServices(services[selectedShop.id]);
     }

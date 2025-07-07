@@ -25,7 +25,6 @@ import moment from "moment";
 import { theme } from "../../core/theme";
 import { getAdminCustomerDetails } from "../../../firebase/firebase";
 
-// Admin theme colors
 const adminTheme = {
   primary: '#8e44ad',
   primaryLight: '#F3E5F5',
@@ -171,7 +170,6 @@ export default function AdminCustomerDetailsScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons name="arrow-left" size={24} color="#000" />
@@ -182,7 +180,6 @@ export default function AdminCustomerDetailsScreen({ route, navigation }) {
         <View style={{ width: 24 }} />
       </View>
 
-      {/* Customer Profile Card */}
       <Surface style={styles.profileCard} elevation={2}>
         <View style={styles.profileHeader}>
           <Avatar.Text 
@@ -226,7 +223,6 @@ export default function AdminCustomerDetailsScreen({ route, navigation }) {
         </View>
       </Surface>
 
-      {/* Stats Overview */}
       <View style={styles.statsGrid}>
         <Surface style={styles.statCard} elevation={1}>
           <MaterialCommunityIcons name="book-multiple" size={24} color="#3B82F6" />
@@ -246,8 +242,6 @@ export default function AdminCustomerDetailsScreen({ route, navigation }) {
           <Text style={styles.statLabel}>Total Spent</Text>
         </Surface>
       </View>
-
-      {/* Tabs */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'overview' && styles.activeTab]}
@@ -277,7 +271,6 @@ export default function AdminCustomerDetailsScreen({ route, navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Tab Content */}
       {activeTab === 'overview' && (
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <Card style={styles.infoCard}>
@@ -321,7 +314,6 @@ export default function AdminCustomerDetailsScreen({ route, navigation }) {
             </Card.Content>
           </Card>
 
-          {/* Recent Activity */}
           <Card style={styles.infoCard}>
             <Card.Content>
               <Text style={styles.sectionTitle}>Recent Activity</Text>

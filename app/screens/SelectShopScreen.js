@@ -10,7 +10,6 @@ import BackButton from "../components/BackButton";
 import { theme } from "../core/theme";
 import { shops } from "../data/city-data";
 
-// Shop coordinates (you should add these to your city-data.js)
 const shopCoordinates = {
   'selangor_premium': { latitude: 3.0448, longitude: 101.5315 },
   'johor_deluxe': { latitude: 1.4849, longitude: 103.7618 },
@@ -25,7 +24,6 @@ export default function SelectShopScreen({ route, navigation }) {
   const [shopsWithDistance, setShopsWithDistance] = useState([]);
 
   useEffect(() => {
-    // Filter shops based on selected city
     const filteredShops = shops.filter(shop => shop.cityId === cityId);
     setCityShops(filteredShops);
     getUserLocation();
@@ -52,7 +50,7 @@ export default function SelectShopScreen({ route, navigation }) {
   };
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of the Earth in kilometers
+    const R = 6371;
     const dLat = deg2rad(lat2 - lat1);
     const dLon = deg2rad(lon2 - lon1);
     const a = 
@@ -78,12 +76,11 @@ export default function SelectShopScreen({ route, navigation }) {
           shopCoords.latitude,
           shopCoords.longitude
         );
-        return { ...shop, distance: Math.round(distance * 10) / 10 }; // Round to 1 decimal
+        return { ...shop, distance: Math.round(distance * 10) / 10 };
       }
       return shop;
     });
 
-    // Sort by distance (nearest first)
     const sortedShops = shopsWithDist.sort((a, b) => {
       if (a.distance && b.distance) return a.distance - b.distance;
       if (a.distance && !b.distance) return -1;

@@ -18,17 +18,13 @@ export default function HomeScreen({ navigation }) {
 
   const checkPendingPayments = async () => {
     try {
-      // Get all booking history to check for completed but unpaid bookings
       const allBookings = await getUserBookingHistory();
-      
-      // Find completed bookings that haven't been paid
       const pendingPayments = allBookings.filter(booking => 
         booking.status === 'completed' && !booking.isPaid
       );
       
-      // If there are pending payments, redirect to payment screen
       if (pendingPayments.length > 0) {
-        const oldestPending = pendingPayments[0]; // Get the oldest pending payment
+        const oldestPending = pendingPayments[0];
         
         navigation.reset({
           index: 0,
@@ -41,10 +37,10 @@ export default function HomeScreen({ navigation }) {
             }
           }]
         });
-        return true; // Indicates we redirected to payment
+        return true;
       }
       
-      return false; // No pending payments
+      return false;
     } catch (error) {
       console.error("Error checking pending payments:", error);
       return false;
@@ -54,18 +50,14 @@ export default function HomeScreen({ navigation }) {
   const loadUserData = async () => {
     try {
       setLoading(true);
-      
-      // First check for pending payments
       const redirectedToPayment = await checkPendingPayments();
       if (redirectedToPayment) {
-        return; // Don't continue loading if we redirected
+        return;
       }
       
-      // Fetch user profile
       const profile = await getUserProfile();
       setUserProfile(profile || { name: "User", vehicles: [] });
       
-      // Fetch upcoming bookings
       const bookings = await getUpcomingBookings();
       setUpcomingBookings(bookings || []);
     } catch (error) {
@@ -77,8 +69,6 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     loadUserData();
-    
-    // Subscribe to navigation focus events to refresh data when screen is focused
     const unsubscribe = navigation.addListener('focus', () => {
       loadUserData();
     });
@@ -245,8 +235,7 @@ export default function HomeScreen({ navigation }) {
                     <MaterialCommunityIcons name="car" size={18} color={theme.colors.text} />
                     <Text style={styles.bookingVehicle}>{booking.vehiclePlate} ({booking.vehicleType})</Text>
                   </View>
-                  
-                  {/* Show payment status */}
+
                   <View style={styles.paymentStatus}>
                     <MaterialCommunityIcons 
                       name={booking.isPaid ? "check-circle" : "clock-time-four"} 

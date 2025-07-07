@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 
 import { theme } from "./app/core/theme";
 
-// Customer Screens
+
 import {
   StartScreen,
   LoginScreen,
@@ -24,12 +24,12 @@ import {
   FeedbackScreen,
 } from "./app/screens";
 
-// New Customer Screens
+
 import SelectCityScreen from "./app/screens/SelectCityScreen";
 import SelectShopScreen from "./app/screens/SelectShopScreen";
 import ShopDetailsScreen from "./app/screens/ShopDetailsScreen";
 import ProfileScreen from "./app/screens/ProfileScreen";
-// Admin Screens
+
 import AdminDashboardScreen from "./app/screens/admin/AdminDashboardScreen";
 import AdminBookingDetailsScreen from "./app/screens/admin/AdminBookingDetailsScreen";
 import AdminBookingHistoryScreen from "./app/screens/admin/AdminBookingHistoryScreen";
@@ -51,13 +51,11 @@ export default function App() {
             headerShown: false,
           }}
         >
-          {/* Common Authentication Screens */}
           <Stack.Screen name="StartScreen" component={StartScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
           <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
     
-          {/* Admin Screens */}
           <Stack.Screen name="AdminDashboardScreen" component={AdminDashboardScreen} />
           <Stack.Screen name="ShopOwnerSalesDashboard" component={ShopOwnerSalesDashboard} />
           <Stack.Screen name="AdminBookingDetailsScreen" component={AdminBookingDetailsScreen} />
@@ -66,17 +64,13 @@ export default function App() {
           <Stack.Screen name="AdminCustomerDetailsScreen" component={AdminCustomerDetailsScreen} />
           <Stack.Screen name="AdminSettingsScreen" component={AdminSettingsScreen} />
           
-          {/* Customer Screens */}
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
          
-          
-          {/* Vehicle Management */}
           <Stack.Screen name="AddVehicleScreen" component={AddVehicleScreen} />
           <Stack.Screen name="MyVehiclesScreen" component={MyVehiclesScreen} />
           <Stack.Screen name="VehicleDetailsScreen" component={VehicleDetailsScreen} />
           
-          {/* Booking Flow */}
           <Stack.Screen name="SelectCityScreen" component={SelectCityScreen} />
           <Stack.Screen name="SelectShopScreen" component={SelectShopScreen} />
           <Stack.Screen name="ShopDetailsScreen" component={ShopDetailsScreen} />

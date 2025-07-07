@@ -9,7 +9,6 @@ import { signOut, getUserData, updateUserSettings } from "../../../firebase/fire
 import { collection, query, where, getDocs, writeBatch, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebase/firebase";
 
-// Admin theme colors
 const adminTheme = {
   primary: '#8e44ad',
   primaryLight: '#F3E5F5',
@@ -31,13 +30,10 @@ export default function AdminSettingsScreen({ navigation }) {
     try {
       const data = await getUserData();
       setUserData(data);
-      
-      // Load settings from user data
       if (data.settings) {
         setAutoAcceptBookings(data.settings.autoAcceptBookings ?? false);
         setShowBookingHistory(data.settings.showBookingHistory ?? true);
       } else {
-        // If no settings exist, use defaults
         setAutoAcceptBookings(false);
         setShowBookingHistory(true);
       }
@@ -48,13 +44,10 @@ export default function AdminSettingsScreen({ navigation }) {
 
   const handleSettingChange = async (setting, value) => {
     try {
-      // Update local state
       switch (setting) {
 
         case 'autoAcceptBookings':
           setAutoAcceptBookings(value);
-          
-          // If enabling auto-accept, confirm all pending bookings
           if (value && userData?.shopId) {
             Alert.alert(
               "Auto-Accept Enabled",
@@ -65,7 +58,6 @@ export default function AdminSettingsScreen({ navigation }) {
                   text: "Yes",
                   onPress: async () => {
                     try {
-                      // Auto-confirm pending bookings
                       const bookingsQuery = query(
                         collection(db, "bookings"),
                         where("shopId", "==", userData.shopId),
@@ -102,14 +94,12 @@ export default function AdminSettingsScreen({ navigation }) {
           break;
       }
 
-      // Update in database
       await updateUserSettings({
         [setting]: value
       });
     } catch (error) {
       Alert.alert("Error", "Failed to update settings");
       
-      // Revert local state on error
       switch (setting) {
 
         case 'autoAcceptBookings':
@@ -145,7 +135,6 @@ export default function AdminSettingsScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons name="arrow-left" size={24} color="#000" />
@@ -157,7 +146,6 @@ export default function AdminSettingsScreen({ navigation }) {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Profile Section */}
         <Surface style={styles.profileSection} elevation={1}>
           <View style={styles.profileHeader}>
             <Surface style={styles.profileAvatar} elevation={2}>
@@ -171,8 +159,6 @@ export default function AdminSettingsScreen({ navigation }) {
           </View>
         </Surface>
 
-
-        {/* Booking Settings */}
         <Card style={styles.settingsCard}>
           <Card.Content>
             <Text style={styles.sectionTitle}>Booking Settings</Text>
@@ -208,7 +194,6 @@ export default function AdminSettingsScreen({ navigation }) {
           </Card.Content>
         </Card>
 
-        {/* Account Actions */}
         <Card style={styles.settingsCard}>
           <Card.Content>
             <Text style={styles.sectionTitle}>Account</Text>
@@ -224,14 +209,12 @@ export default function AdminSettingsScreen({ navigation }) {
           </Card.Content>
         </Card>
 
-        {/* App Info */}
         <View style={styles.appInfo}>
           <Text style={styles.appVersion}>Swift Car Wash v1.0.0</Text>
           <Text style={styles.appCopyright}>© 2025 Swift Car Wash</Text>
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity 
           style={styles.navItem} 

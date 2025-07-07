@@ -28,7 +28,6 @@ import moment from "moment";
 import { theme } from "../../core/theme";
 import { getAdminBookingHistory } from "../../../firebase/firebase";
 
-// Admin theme colors
 const adminTheme = {
   primary: '#8e44ad',
   primaryLight: '#F3E5F5',
@@ -89,7 +88,6 @@ export default function AdminBookingHistoryScreen({ navigation }) {
   const filterBookings = () => {
     let filtered = [...bookings];
 
-    // Search filter
     if (searchQuery) {
       filtered = filtered.filter(booking =>
         booking.customerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -98,12 +96,10 @@ export default function AdminBookingHistoryScreen({ navigation }) {
       );
     }
 
-    // Status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter(booking => booking.status === statusFilter);
     }
 
-    // Date filter
     const now = moment();
     switch (dateFilter) {
       case "today":
@@ -143,7 +139,6 @@ export default function AdminBookingHistoryScreen({ navigation }) {
   };
 
   const exportData = () => {
-    // Implement export functionality
     alert("Export feature will generate a CSV file of booking history");
   };
 
@@ -221,7 +216,6 @@ export default function AdminBookingHistoryScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons name="arrow-left" size={24} color="#000" />
@@ -233,8 +227,6 @@ export default function AdminBookingHistoryScreen({ navigation }) {
           <MaterialCommunityIcons name="download" size={24} color={adminTheme.primary} />
         </TouchableOpacity>
       </View>
-
-      {/* Stats Overview */}
       <ScrollView 
         horizontal 
         showsHorizontalScrollIndicator={false} 
@@ -260,8 +252,6 @@ export default function AdminBookingHistoryScreen({ navigation }) {
           <Text style={styles.statLabel}>Total Revenue</Text>
         </Surface>
       </ScrollView>
-
-      {/* Search and Filters */}
       <View style={styles.searchSection}>
         <Searchbar
           placeholder="Search by name, vehicle, or ID..."
@@ -306,7 +296,6 @@ export default function AdminBookingHistoryScreen({ navigation }) {
         </ScrollView>
       </View>
 
-      {/* Bookings List */}
       <FlatList
         data={filteredBookings}
         renderItem={renderBookingItem}
@@ -337,7 +326,6 @@ export default function AdminBookingHistoryScreen({ navigation }) {
         }
       />
 
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity 
           style={styles.navItem} 

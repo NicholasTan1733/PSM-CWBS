@@ -11,7 +11,6 @@ import { theme } from "../core/theme";
 import { getUserVehicles } from "../../firebase/firebase";
 import { shops, services, addOns } from "../data/city-data";
 
-// Vehicle type icons mapping
 const vehicleIcons = {
   sedan: "car-hatchback",
   hatchback: "car-hatchback",
@@ -35,26 +34,21 @@ export default function BookingScreen({ route, navigation }) {
     try {
       setLoading(true);
       
-      // Load shop details
       const shop = shops.find(s => s.id === shopId);
       setShopDetails(shop);
       
-      // Load shop services
       if (shop && services[shop.id]) {
         const servicesData = services[shop.id];
         setShopServices(servicesData);
         
-        // Set default selected service to the first one
         if (servicesData.length > 0 && servicesData[0]) {
           setSelectedService(servicesData[0].id);
         }
       }
-      
-      // Fetch user vehicles
+
       const userVehicles = await getUserVehicles();
       
       if (!userVehicles || userVehicles.length === 0) {
-        // If no vehicles, redirect to add vehicle
         Alert.alert(
           "No Vehicles Found",
           "Please add a vehicle before booking a service.",
@@ -65,17 +59,14 @@ export default function BookingScreen({ route, navigation }) {
       
       setVehicles(userVehicles);
       
-      // If a vehicle ID was passed in, select it
       if (selectedVehicleId) {
         const vehicle = userVehicles.find(v => v.id === selectedVehicleId);
         if (vehicle) {
           setSelectedVehicle(vehicle);
         } else {
-          // If specified vehicle wasn't found, select the first one
           setSelectedVehicle(userVehicles.length > 0 ? userVehicles[0] : null);
         }
       } else {
-        // Default to first vehicle
         setSelectedVehicle(userVehicles.length > 0 ? userVehicles[0] : null);
       }
     } catch (error) {
@@ -131,16 +122,10 @@ export default function BookingScreen({ route, navigation }) {
       return;
     }
 
-    // Get the selected service details
     const serviceDetails = shopServices.find(s => s.id === selectedService) || shopServices[0];
-    
-    // Get selected add-ons details
     const selectedAddOnsDetails = addOns.filter(addon => selectedAddOns.includes(addon.id));
-    
-    // Calculate total price
     const totalPrice = calculateTotal();
 
-    // Navigate to time selection screen with booking details
     navigation.navigate("BookingTimeScreen", {
       shopId,
       shopName: shopDetails?.name,
@@ -151,7 +136,6 @@ export default function BookingScreen({ route, navigation }) {
     });
   };
 
-  // If loading, show loading state
   if (loading) {
     return (
       <Background>

@@ -10,7 +10,6 @@ import BackButton from "../components/BackButton";
 import { theme } from "../core/theme";
 import { cities } from "../data/city-data";
 
-// Enhanced Malaysian state coordinates (more comprehensive)
 const stateCoordinates = {
   'selangor': { latitude: 3.0738, longitude: 101.5183 },
   'johor': { latitude: 1.4927, longitude: 103.7414 },
@@ -45,8 +44,6 @@ export default function SelectCityScreen({ navigation }) {
     try {
       setLocationLoading(true);
       setLocationError(null);
-      
-      // Check if location services are enabled
       const locationEnabled = await Location.hasServicesEnabledAsync();
       if (!locationEnabled) {
         setLocationError('Location services are disabled. Please enable them in settings.');
@@ -54,7 +51,6 @@ export default function SelectCityScreen({ navigation }) {
         return;
       }
 
-      // Request permission
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setLocationError('Location permission denied. Please select city manually.');
@@ -62,15 +58,13 @@ export default function SelectCityScreen({ navigation }) {
         return;
       }
 
-      // Get current position with timeout
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Balanced,
-        timeout: 15000, // 15 seconds timeout
+        timeout: 15000,
       });
       
       setUserLocation(location.coords);
       
-      // Find nearest city
       const nearest = findNearestCity(location.coords);
       setNearbyCity(nearest);
       
@@ -114,9 +108,8 @@ export default function SelectCityScreen({ navigation }) {
     return nearestCity;
   };
 
-  // Calculate distance using Haversine formula
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of the Earth in kilometers
+    const R = 6371; 
     const dLat = deg2rad(lat2 - lat1);
     const dLon = deg2rad(lon2 - lon1);
     const a = 
@@ -124,7 +117,7 @@ export default function SelectCityScreen({ navigation }) {
       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
       Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    const d = R * c; // Distance in kilometers
+    const d = R * c;
     return d;
   };
 

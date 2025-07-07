@@ -10,7 +10,6 @@ import BackButton from "../components/BackButton";
 import { theme } from "../core/theme";
 import { getVehicleDetails, deleteVehicle, getVehicleBookingHistory } from "../../firebase/firebase";
 
-// Vehicle type icons mapping
 const vehicleIcons = {
   sedan: "car-hatchback",
   hatchback: "car-hatchback",
@@ -28,11 +27,8 @@ export default function VehicleDetailsScreen({ route, navigation }) {
   const loadVehicleData = async () => {
     try {
       setLoading(true);
-      // Fetch vehicle details - This would be implemented to query Firestore
       const vehicleData = await getVehicleDetails(vehicleId);
       setVehicle(vehicleData);
-      
-      // Fetch vehicle booking history - This would be implemented to query Firestore
       const history = await getVehicleBookingHistory(vehicleId);
       setBookingHistory(history || []);
     } catch (error) {
@@ -60,7 +56,6 @@ export default function VehicleDetailsScreen({ route, navigation }) {
   const confirmDelete = async () => {
     try {
       setDeleteLoading(true);
-      // This function would be implemented to delete vehicle from Firestore
       await deleteVehicle(vehicleId);
       setDeleteLoading(false);
       navigation.goBack();

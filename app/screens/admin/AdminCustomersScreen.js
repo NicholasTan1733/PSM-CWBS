@@ -27,7 +27,6 @@ import moment from "moment";
 import { theme } from "../../core/theme";
 import { getAdminCustomers } from "../../../firebase/firebase";
 
-// Admin theme colors
 const adminTheme = {
   primary: '#8e44ad',
   primaryLight: '#F3E5F5',
@@ -87,7 +86,6 @@ export default function AdminCustomersScreen({ navigation }) {
   const filterAndSortCustomers = () => {
     let filtered = [...customers];
 
-    // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(customer =>
         customer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -96,7 +94,6 @@ export default function AdminCustomersScreen({ navigation }) {
       );
     }
 
-    // Apply sorting
     switch (sortBy) {
       case "recent":
         filtered.sort((a, b) => 
@@ -145,7 +142,6 @@ export default function AdminCustomersScreen({ navigation }) {
   };
 
   const getCustomerStatus = (customer) => {
-    // Determine customer status based on activity
     const daysSinceLastBooking = moment().diff(moment(customer.lastBookingDate), 'days');
     
     if (customer.totalBookings >= 10) return 'vip';
@@ -271,7 +267,6 @@ export default function AdminCustomersScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons name="arrow-left" size={24} color="#000" />
@@ -311,7 +306,6 @@ export default function AdminCustomersScreen({ navigation }) {
         </Menu>
       </View>
 
-      {/* Stats Overview */}
       <View style={styles.statsContainer}>
         <Surface style={[styles.statCard, { backgroundColor: adminTheme.primaryLight }]} elevation={1}>
           <MaterialCommunityIcons name="account-group" size={24} color={adminTheme.primary} />
@@ -338,7 +332,6 @@ export default function AdminCustomersScreen({ navigation }) {
         </Surface>
       </View>
 
-      {/* Search Bar */}
       <View style={styles.searchSection}>
         <Searchbar
           placeholder="Search customers..."
@@ -349,7 +342,6 @@ export default function AdminCustomersScreen({ navigation }) {
         />
       </View>
 
-      {/* Customers List */}
       <FlatList
         data={filteredCustomers}
         renderItem={renderCustomerItem}
@@ -378,7 +370,6 @@ export default function AdminCustomersScreen({ navigation }) {
         }
       />
 
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity 
           style={styles.navItem} 

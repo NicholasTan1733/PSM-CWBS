@@ -11,7 +11,6 @@ import BackButton from "../components/BackButton";
 import { theme } from "../core/theme";
 import { addVehicle } from "../../firebase/firebase";
 
-// Vehicle type definitions
 const vehicleTypes = [
   { value: 'sedan', label: 'Sedan', icon: 'car-hatchback' },
   { value: 'hatchback', label: 'Hatchback', icon: 'car-hatchback' },
@@ -29,7 +28,6 @@ export default function AddVehicleScreen({ navigation }) {
 
   const validatePlateNumber = (plate) => {
     if (!plate) return "License plate is required.";
-    // Can be expanded with additional validation logic specific to your region
     return '';
   };
 
@@ -44,7 +42,6 @@ export default function AddVehicleScreen({ navigation }) {
     setLoading(true);
     
     try {
-      // This function would be implemented to add a vehicle to Firestore
       await addVehicle({
         plateNumber: plateNumber.value.toUpperCase(),
         type: vehicleType,
@@ -58,7 +55,6 @@ export default function AddVehicleScreen({ navigation }) {
     } catch (error) {
       setLoading(false);
       console.error("Error adding vehicle:", error);
-      // Show error message
     }
   };
 

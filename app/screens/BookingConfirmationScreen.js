@@ -28,15 +28,12 @@ export default function BookingConfirmationScreen({ navigation, route }) {
   const [cancelLoading, setCancelLoading] = useState(false);
   const [countdown, setCountdown] = useState(null);
   const [timeUntilAppointment, setTimeUntilAppointment] = useState(null);
-  
-  // Load booking details if bookingId is provided
+
   useEffect(() => {
     if (bookingId) {
       loadBookingDetails();
     }
   }, [bookingId]);
-  
-  // Update countdown timer
   useEffect(() => {
     if (!bookingDetails || !bookingId || confirmSuccess) return;
     
@@ -68,8 +65,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
     };
     
     updateCountdown();
-    const interval = setInterval(updateCountdown, 60000); // Update every minute
-    
+    const interval = setInterval(updateCountdown, 60000);
     return () => clearInterval(interval);
   }, [bookingDetails, bookingId, confirmSuccess]);
   
@@ -89,8 +85,6 @@ export default function BookingConfirmationScreen({ navigation, route }) {
   const handleConfirmBooking = async () => {
     try {
       setConfirmLoading(true);
-      
-      // Check if time slot is still available
       const isAvailable = await checkSlotAvailability(
         bookingDetails.shopId,
         bookingDetails.date,
@@ -106,18 +100,16 @@ export default function BookingConfirmationScreen({ navigation, route }) {
         );
         return;
       }
-      
-      // Create booking
+
       const newBookingId = await createBooking(bookingDetails);
       
       setConfirmSuccess(true);
-      
-      // Navigate to payment with booking ID
+
       setTimeout(() => {
         navigation.navigate('PaymentScreen', {
           bookingId: newBookingId,
           totalPrice: bookingDetails.totalPrice,
-          isEarlyPayment: true // This is early payment since booking just created
+          isEarlyPayment: true
         });
       }, 2000);
     } catch (error) {
@@ -129,8 +121,6 @@ export default function BookingConfirmationScreen({ navigation, route }) {
   
   const handleCancelBooking = async () => {
     if (!bookingId) return;
-    
-    // Check if cancellation is allowed (2+ hours before appointment)
     if (timeUntilAppointment < 2) {
       Alert.alert(
         "Cannot Cancel",
@@ -139,8 +129,6 @@ export default function BookingConfirmationScreen({ navigation, route }) {
       );
       return;
     }
-
-    // Check if payment was made
     const hasPayment = bookingDetails.isPaid;
 
     Alert.alert(
@@ -275,7 +263,6 @@ export default function BookingConfirmationScreen({ navigation, route }) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Success Message for New Bookings */}
         {confirmSuccess && (
           <Card style={styles.successCard}>
             <Card.Content style={styles.successContent}>
@@ -289,7 +276,6 @@ export default function BookingConfirmationScreen({ navigation, route }) {
           </Card>
         )}
 
-        {/* Countdown for Active Bookings */}
         {countdown && bookingId && !confirmSuccess && (
           <Card style={styles.countdownCard}>
             <Card.Content style={styles.countdownContent}>
@@ -302,7 +288,6 @@ export default function BookingConfirmationScreen({ navigation, route }) {
           </Card>
         )}
         
-        {/* Booking Information Card */}
         <Card style={styles.bookingCard}>
           <Card.Content>
             <View style={styles.bookingHeader}>
@@ -363,7 +348,6 @@ export default function BookingConfirmationScreen({ navigation, route }) {
           </Card.Content>
         </Card>
 
-        {/* Payment Status Card - Updated Section */}
         {bookingId && (
           <Card style={styles.paymentCard}>
             <Card.Content>
@@ -395,8 +379,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                   )}
                 </View>
               )}
-              
-              {/* Only show payment button if NOT paid and booking is active */}
+
               {!bookingDetails.isPaid && bookingDetails.status !== 'cancelled' && (
                 <Button
                   mode="contained"
@@ -416,7 +399,6 @@ export default function BookingConfirmationScreen({ navigation, route }) {
           </Card>
         )}
 
-        {/* Cancellation Policy Card */}
         {cancellationInfo && bookingId && bookingDetails.status !== 'cancelled' && bookingDetails.status !== 'completed' && (
           <Card style={styles.cancellationCard}>
             <Card.Content>
@@ -441,8 +423,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
             </Card.Content>
           </Card>
         )}
-        
-        {/* Action Buttons */}
+
         {!bookingId && !confirmSuccess && (
           <View style={styles.actionButtons}>
             <Button
@@ -465,8 +446,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
             </PaperButton>
           </View>
         )}
-        
-        {/* Cancel button - only show if cancellation is allowed */}
+
         {bookingId && cancellationInfo?.canCancel && bookingDetails.status !== 'cancelled' && bookingDetails.status !== 'completed' && (
           <View style={styles.actionButtons}>
             <PaperButton

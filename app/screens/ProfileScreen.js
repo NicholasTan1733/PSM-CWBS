@@ -1,4 +1,3 @@
-// ProfileScreen.js
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { Text, Avatar, TextInput as PaperTextInput, ActivityIndicator } from "react-native-paper";
@@ -33,8 +32,6 @@ export default function ProfileScreen({ navigation }) {
       setLoading(true);
       const profile = await getUserProfile();
       setUserProfile(profile);
-      
-      // Set form values
       setName({ value: profile.name || "", error: "" });
       setPhone({ value: profile.phone || "", error: "" });
     } catch (error) {
@@ -46,7 +43,6 @@ export default function ProfileScreen({ navigation }) {
   };
   
   const handleSaveProfile = async () => {
-    // Validate form
     const nameError = nameValidator(name.value);
     const phoneError = phoneValidator(phone.value);
     
@@ -58,21 +54,16 @@ export default function ProfileScreen({ navigation }) {
     
     try {
       setSaving(true);
-      
-      // Update profile
       await saveUserProfile({
         name: name.value,
         phone: phone.value,
       });
-      
-      // Update local state
       setUserProfile({
         ...userProfile,
         name: name.value,
         phone: phone.value,
       });
-      
-      // Exit edit mode
+
       setEditMode(false);
       
       Alert.alert("Success", "Profile updated successfully");
@@ -187,7 +178,6 @@ export default function ProfileScreen({ navigation }) {
               <Button
                 mode="outlined"
                 onPress={() => {
-                  // Reset form values and exit edit mode
                   setName({ value: userProfile.name || "", error: "" });
                   setPhone({ value: userProfile.phone || "", error: "" });
                   setEditMode(false);

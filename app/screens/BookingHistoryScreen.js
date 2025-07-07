@@ -24,7 +24,6 @@ export default function BookingHistoryScreen({ navigation }) {
   const loadBookingHistory = async () => {
     try {
       setLoading(true);
-      // This function would query Firestore to get user's booking history
       const history = await getUserBookingHistory();
       setBookings(history || []);
       applyFiltersAndSort(history || [], activeFilter, activeSort, searchQuery);
@@ -51,7 +50,6 @@ export default function BookingHistoryScreen({ navigation }) {
   };
 
   const applyFiltersAndSort = (data, filter, sort, query) => {
-    // First apply search query
     let result = data;
     if (query) {
       const lowerQuery = query.toLowerCase();
@@ -68,13 +66,9 @@ export default function BookingHistoryScreen({ navigation }) {
         );
       });
     }
-
-    // Then apply status filter
     if (filter !== 'all') {
       result = result.filter(booking => booking.status === filter);
     }
-
-    // Finally apply sorting
     result = [...result].sort((a, b) => {
       const dateA = moment(`${a.date} ${a.time}`, 'YYYY-MM-DD HH:mm');
       const dateB = moment(`${b.date} ${b.time}`, 'YYYY-MM-DD HH:mm');
@@ -89,7 +83,7 @@ export default function BookingHistoryScreen({ navigation }) {
         case 'price_desc':
           return (b.totalPrice || 0) - (a.totalPrice || 0);
         default:
-          return dateB.diff(dateA); // Default to newest first
+          return dateB.diff(dateA);
       }
     });
 
@@ -133,11 +127,8 @@ export default function BookingHistoryScreen({ navigation }) {
   };
 
   const renderBookingItem = ({ item }) => {
-    // Safely extract vehicle information
     const vehiclePlate = item.vehiclePlate || item.vehicle?.plateNumber || 'N/A';
     const vehicleType = item.vehicleType || item.vehicle?.type || 'N/A';
-    
-    // Safely extract service information
     const serviceName = typeof item.service === 'object' ? item.service?.name || 'Car Wash Service' : item.service || 'Car Wash Service';
     
     return (
@@ -227,7 +218,7 @@ export default function BookingHistoryScreen({ navigation }) {
                 {!item.isPaid && (
                   <PaperButton
                     mode="outlined"
-                    onPress={() => {/* Handle cancel booking */}}
+                    onPress={() => {}}
                     style={[styles.actionButton, styles.cancelButton]}
                     icon="cancel"
                   >

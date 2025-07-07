@@ -18,7 +18,6 @@ import {
 } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-// Remove chart library import - we'll create custom charts
 import moment from "moment";
 
 import { theme } from "../../core/theme";
@@ -26,7 +25,6 @@ import { getBookingsForAdmin } from "../../../firebase/firebase";
 
 const { width: screenWidth } = Dimensions.get("window");
 
-// Admin theme colors
 const adminTheme = {
   primary: '#8e44ad',
   primaryLight: '#F3E5F5',
@@ -38,7 +36,7 @@ const adminTheme = {
 export default function ShopOwnerSalesDashboard({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [timeRange, setTimeRange] = useState('week'); // week, month, year
+  const [timeRange, setTimeRange] = useState('week');
   const [bookings, setBookings] = useState([]);
   
   const [salesData, setSalesData] = useState({
@@ -86,18 +84,14 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
         break;
     }
 
-    // Filter bookings within time range
     const filteredBookings = bookingsData.filter(booking => 
       moment(booking.date).isAfter(startDate) && 
       booking.status === 'completed'
     );
 
-    // Calculate totals
     const totalRevenue = filteredBookings.reduce((sum, b) => sum + (b.totalAmount || 0), 0);
     const totalBookings = filteredBookings.length;
     const averageTicket = totalBookings > 0 ? totalRevenue / totalBookings : 0;
-    
-    // Calculate completion rate
     const allBookingsInRange = bookingsData.filter(booking => 
       moment(booking.date).isAfter(startDate)
     );
@@ -105,10 +99,8 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
       ? (filteredBookings.length / allBookingsInRange.length) * 100 
       : 0;
 
-    // Generate chart data
     const chartData = generateChartData(filteredBookings, timeRange);
-    
-    // Calculate top services
+
     const serviceCount = {};
     filteredBookings.forEach(booking => {
       booking.services?.forEach(service => {
@@ -121,7 +113,6 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
       .slice(0, 5)
       .map(([service, count]) => ({ service, count }));
 
-    // Get recent transactions
     const recentTransactions = filteredBookings
       .sort((a, b) => moment(b.date).valueOf() - moment(a.date).valueOf())
       .slice(0, 5);
@@ -142,7 +133,6 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
     const data = [];
     
     if (range === 'week') {
-      // Last 7 days
       for (let i = 6; i >= 0; i--) {
         const date = moment().subtract(i, 'days');
         labels.push(date.format('ddd'));
@@ -154,7 +144,6 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
         data.push(dayRevenue);
       }
     } else if (range === 'month') {
-      // Last 4 weeks
       for (let i = 3; i >= 0; i--) {
         const weekStart = moment().subtract(i, 'weeks').startOf('week');
         const weekEnd = moment().subtract(i, 'weeks').endOf('week');
@@ -167,7 +156,6 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
         data.push(weekRevenue);
       }
     } else {
-      // Last 12 months
       for (let i = 11; i >= 0; i--) {
         const date = moment().subtract(i, 'months');
         labels.push(date.format('MMM'));
@@ -217,7 +205,6 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
           />
         }
       >
-        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <MaterialCommunityIcons name="arrow-left" size={24} color="#000" />
@@ -230,7 +217,6 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Time Range Selector */}
         <View style={styles.timeRangeContainer}>
           <SegmentedButtons
             value={timeRange}
@@ -245,7 +231,6 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
           />
         </View>
 
-        {/* Key Metrics */}
         <View style={styles.metricsGrid}>
           <Surface style={[styles.metricCard, { backgroundColor: adminTheme.primaryLight }]} elevation={1}>
             <MaterialCommunityIcons name="cash-multiple" size={32} color={adminTheme.primary} />
@@ -272,7 +257,6 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
           </Surface>
         </View>
 
-        {/* Revenue Chart - Custom Implementation */}
         <Card style={styles.chartCard}>
           <Card.Content>
             <Text style={styles.chartTitle}>Revenue Trend</Text>
@@ -313,7 +297,6 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
           </Card.Content>
         </Card>
 
-        {/* Top Services */}
         <Card style={styles.servicesCard}>
           <Card.Content>
             <Text style={styles.sectionTitle}>Top Services</Text>
@@ -345,7 +328,6 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
           </Card.Content>
         </Card>
 
-        {/* Recent Transactions */}
         <Card style={styles.transactionsCard}>
           <Card.Content>
             <View style={styles.transactionsHeader}>

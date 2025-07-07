@@ -28,7 +28,6 @@ export default function FeedbackScreen({ route, navigation }) {
         const details = await getBookingDetails(bookingId);
         setBookingDetails(details);
         
-        // If feedback already exists, populate the form
         if (details.feedback) {
           setRating(details.feedback.rating);
           setFeedback(details.feedback.comment);
@@ -58,17 +57,13 @@ export default function FeedbackScreen({ route, navigation }) {
     try {
       setSubmitting(true);
       
-      // Submit feedback to database
       await submitFeedback(bookingId, {
         rating,
         comment: feedback,
         timestamp: new Date().toISOString()
       });
       
-      // Show success state
       setSubmitSuccess(true);
-      
-      // Navigate back after a delay
       setTimeout(() => {
         navigation.goBack();
       }, 2000);
@@ -86,8 +81,7 @@ export default function FeedbackScreen({ route, navigation }) {
   const formatTime = (timeString) => {
     return moment(timeString, 'HH:mm').format('h:mm A');
   };
-  
-  // If loading, show loading indicator
+
   if (loading) {
     return (
       <Background>

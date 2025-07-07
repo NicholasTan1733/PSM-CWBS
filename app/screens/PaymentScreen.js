@@ -27,7 +27,6 @@ export default function PaymentScreen({ route, navigation }) {
   
   const warningAccepted = !isEarlyPayment;
   
-  // Fetch booking details
   useEffect(() => {
     const fetchBookingDetails = async () => {
       try {
@@ -45,14 +44,12 @@ export default function PaymentScreen({ route, navigation }) {
     fetchBookingDetails();
   }, [bookingId]);
 
-  // Format card number
   const formatCardNumber = (text) => {
     const cleaned = text.replace(/\s/g, '');
     const chunks = cleaned.match(/.{1,4}/g) || [];
     return chunks.join(' ');
   };
 
-  // Format expiry date
   const formatExpiryDate = (text) => {
     const cleaned = text.replace(/\D/g, '');
     if (cleaned.length >= 2) {
@@ -61,25 +58,20 @@ export default function PaymentScreen({ route, navigation }) {
     return cleaned;
   };
 
-  // Format price to RM with proper decimal places
   const formatPrice = (price) => {
     const numPrice = parseFloat(price);
-    // If it's a whole number, show without decimals
     if (numPrice % 1 === 0) {
       return `RM${numPrice.toFixed(0)}.00`;
     }
-    // Otherwise show with 2 decimal places
     return `RM${numPrice.toFixed(2)}`;
   };
 
   const handlePayment = async () => {
-    // Validate payment method selection
     if (paymentMethod === 'e_wallet' && !selectedWallet) {
       Alert.alert("Error", "Please select an e-wallet");
       return;
     }
 
-    // Validate card details if credit card is selected
     if (paymentMethod === 'credit_card') {
       if (!cardNumber || !cardExpiry || !cardCVV || !cardName) {
         Alert.alert("Error", "Please fill in all card details");
@@ -105,17 +97,11 @@ export default function PaymentScreen({ route, navigation }) {
     try {
       setProcessingPayment(true);
       
-      // Determine payment type
       const paymentType = paymentMethod === 'credit_card' ? 'card' : selectedWallet;
       
-      // Process the payment
       await processPayment(bookingId, paymentMethod, paymentType);
-      
-      // Show success state
       setPaymentSuccess(true);
       setPaymentResult({ status: 'completed' });
-      
-      // Navigate back to home screen after a delay
       setTimeout(() => {
         navigation.reset({
           index: 0,

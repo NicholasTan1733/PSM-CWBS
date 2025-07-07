@@ -41,10 +41,7 @@ export default function RegisterScreen({ navigation }) {
     setLoading(true);
     
     try {
-      // Create user account
       const userCredential = await signUp(email.value, password.value);
-      
-      // Save additional user profile information
       await createUserProfile(userCredential.user.uid, {
         name: name.value,
         email: email.value,
@@ -54,7 +51,6 @@ export default function RegisterScreen({ navigation }) {
       
       setLoading(false);
       
-      // Show success alert and navigate to login
       navigation.reset({
         index: 0,
         routes: [{ 

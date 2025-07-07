@@ -8,11 +8,11 @@ export const theme = {
     primary: '#560CCE',
     secondary: '#414757',
     error: '#f13a59',
-    admin: '#FF6B35',        // Orange for admin/shop owner
-    success: '#4CAF50',      // Green for success states
-    warning: '#FF9800',      // Amber for warnings
-    info: '#2196F3',         // Blue for info
-    accent: '#FFC107',       // Yellow accent
+    admin: '#FF6B35',
+    success: '#4CAF50',
+    warning: '#FF9800',
+    info: '#2196F3',
+    accent: '#FFC107',
     placeholder: '#888888',
     surface: '#FFFFFF',
     background: '#FFFFFF',

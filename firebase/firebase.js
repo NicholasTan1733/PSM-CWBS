@@ -326,12 +326,9 @@ export const createBooking = async (bookingData) => {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
     
-    // Get user profile
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (!userDoc.exists()) throw new Error("User profile not found");
     const userData = userDoc.data();
-    
-    // Get vehicle details if vehicleId is provided
     let vehicleInfo = {};
     if (bookingData.vehicle?.id) {
       try {
@@ -365,13 +362,10 @@ export const createBooking = async (bookingData) => {
     if (!isAvailable) {
       throw new Error("Selected time slot is not available");
     }
-    
-    // Check if shop has auto-accept enabled
     let initialStatus = "pending";
     let autoAccepted = false;
     
     if (bookingData.shopId) {
-      // Check shop admin settings for auto-accept
       const adminQuery = query(
         collection(db, "users"),
         where("shopId", "==", bookingData.shopId),
@@ -389,7 +383,6 @@ export const createBooking = async (bookingData) => {
         }
       }
       
-      // Alternative: If you have shops collection with settings
       try {
         const shopDoc = await getDoc(doc(db, "shops", bookingData.shopId));
         if (shopDoc.exists() && shopDoc.data().autoAcceptBookings === true) {
@@ -397,7 +390,6 @@ export const createBooking = async (bookingData) => {
           autoAccepted = true;
         }
       } catch (error) {
-        // Shop document might not exist, continue with admin settings
       }
     }
     
@@ -409,8 +401,8 @@ export const createBooking = async (bookingData) => {
       customerName: userData.name || userData.email,
       customerPhone: userData.phone || '',
       customerEmail: userData.email,
-      status: initialStatus, // Will be "confirmed" if auto-accept is enabled
-      autoAccepted: autoAccepted, // Track if this was auto-accepted
+      status: initialStatus,
+      autoAccepted: autoAccepted,
       isPaid: false,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
@@ -724,11 +716,7 @@ export const processPaymentWithHold = async (bookingId, paymentMethod) => {
 
 export const getAdminBookingHistory = async () => {
   try {
-    // This uses the same function as getBookingsForAdmin
-    // but you can filter for completed/cancelled bookings
     const allBookings = await getBookingsForAdmin();
-    
-    // Return all bookings sorted by date
     return allBookings.sort((a, b) => {
       const dateA = new Date(`${a.date} ${a.time}`);
       const dateB = new Date(`${b.date} ${b.time}`);
@@ -745,16 +733,14 @@ export const getBookingsForAdmin = async () => {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
     
-    // Get user data to find their shop
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (!userDoc.exists() || userDoc.data().userType !== 'admin') {
       throw new Error("Unauthorized - Admin access required");
     }
     
     const userData = userDoc.data();
-    const shopId = userData.shopId || userData.shopName; // Use shopId or shopName
+    const shopId = userData.shopId || userData.shopName;
     
-    // Get all bookings for this shop
     const bookingsRef = collection(db, "bookings");
     const q = query(
       bookingsRef,
@@ -768,15 +754,40 @@ export const getBookingsForAdmin = async () => {
     
     querySnapshot.forEach((doc) => {
       const data = doc.data();
+
+      let servicesArray = [];
+      let serviceObject = null;
+      
+      if (data.service) {
+        if (typeof data.service === 'object' && data.service.name) {
+          servicesArray = [data.service.name];
+          serviceObject = data.service;
+        } else if (typeof data.service === 'string') {
+          servicesArray = [data.service];
+          serviceObject = data.service;
+        }
+      } else if (data.services && Array.isArray(data.services)) {
+        servicesArray = data.services;
+        serviceObject = data.services[0] || 'No Service';
+      } else if (data.serviceType) {
+        servicesArray = [data.serviceType];
+        serviceObject = data.serviceType;
+      }
+      
+      if (servicesArray.length === 0) {
+        servicesArray = ['No Service'];
+        serviceObject = 'No Service';
+      }
+      
       bookings.push({
         id: doc.id,
         ...data,
-        // Ensure all required fields exist
+        services: servicesArray,
+        service: serviceObject, 
         customerName: data.customerName || data.userName || 'Unknown',
         vehicleMake: data.vehicleMake || data.vehicle?.make || '',
         vehicleModel: data.vehicleModel || data.vehicle?.model || '',
         vehicleNumber: data.vehicleNumber || data.vehicle?.plateNumber || '',
-        services: data.services || [],
         totalAmount: data.totalAmount || data.totalPrice || 0,
         status: data.status || 'pending'
       });
@@ -794,7 +805,6 @@ export const getAdminCustomers = async () => {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
     
-    // Verify admin access
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (!userDoc.exists() || userDoc.data().userType !== 'admin') {
       throw new Error("Unauthorized - Admin access required");
@@ -803,7 +813,6 @@ export const getAdminCustomers = async () => {
     const userData = userDoc.data();
     const shopId = userData.shopId || userData.shopName;
     
-    // Get all bookings for this shop to find customers
     const bookingsRef = collection(db, "bookings");
     const q = query(
       bookingsRef,
@@ -812,8 +821,7 @@ export const getAdminCustomers = async () => {
     
     const querySnapshot = await getDocs(q);
     const customerMap = new Map();
-    
-    // Build customer list from bookings
+
     querySnapshot.forEach((doc) => {
       const booking = doc.data();
       const customerId = booking.userId || booking.customerId;
@@ -838,7 +846,6 @@ export const getAdminCustomers = async () => {
       }
     });
     
-    // Try to get additional customer data from users collection
     const customers = [];
     for (const [customerId, customerData] of customerMap) {
       try {
@@ -851,7 +858,7 @@ export const getAdminCustomers = async () => {
             email: userData.email || customerData.email,
             phone: userData.phone || customerData.phone,
             joinDate: userData.createdAt || customerData.firstBookingDate,
-            averageRating: 4.5 + Math.random() * 0.5 // Mock rating
+            averageRating: 4.5 + Math.random() * 0.5
           });
         } else {
           customers.push(customerData);

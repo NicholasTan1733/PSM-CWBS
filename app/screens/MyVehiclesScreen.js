@@ -9,12 +9,12 @@ import BackButton from "../components/BackButton";
 import { theme } from "../core/theme";
 import { getUserVehicles } from "../../firebase/firebase";
 
-// Vehicle type icons mapping
+
 const vehicleIcons = {
   sedan: "car-hatchback",
   hatchback: "car-hatchback",
   suv: "car-estate",
-  mpv: "car-estate", // Using estate as there isn't a specific MPV icon
+  mpv: "car-estate",
 };
 
 export default function MyVehiclesScreen({ navigation }) {
@@ -25,7 +25,6 @@ export default function MyVehiclesScreen({ navigation }) {
   const loadVehicles = async () => {
     try {
       setLoading(true);
-      // Fetch user vehicles - This would be implemented to query Firestore
       const userVehicles = await getUserVehicles();
       setVehicles(userVehicles || []);
     } catch (error) {
@@ -37,8 +36,6 @@ export default function MyVehiclesScreen({ navigation }) {
 
   useEffect(() => {
     loadVehicles();
-    
-    // Subscribe to navigation focus events to refresh data when screen is focused
     const unsubscribe = navigation.addListener('focus', () => {
       loadVehicles();
     });

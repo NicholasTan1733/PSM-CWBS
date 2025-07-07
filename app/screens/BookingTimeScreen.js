@@ -24,24 +24,18 @@ export default function EnhancedBookingTimeScreen({ route, navigation }) {
   const [slotCheckLoading, setSlotCheckLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   
-  // Calculate min and max dates for calendar
   const minDate = moment().format('YYYY-MM-DD');
   const maxDate = moment().add(30, 'days').format('YYYY-MM-DD');
   
   const loadAvailableTimeSlots = async (date, showLoading = true) => {
     try {
       if (showLoading) setLoading(true);
-      
-      // Get available slots using the enhanced algorithm
       const availableSlots = await getAvailableTimeSlots(shopId, date, service.duration);
-      
-      // If today, filter out past time slots + buffer
       if (date === minDate) {
         const now = moment();
         const filteredSlots = availableSlots.filter(slot => {
           const [hour, minute] = slot.split(':').map(Number);
           const slotTime = moment().hour(hour).minute(minute);
-          // Add 2 hour buffer for same-day bookings (matches payment policy)
           return slotTime.isAfter(now.clone().add(2, 'hours'));
         });
         setAvailableTimeSlots(filteredSlots);
@@ -64,14 +58,13 @@ export default function EnhancedBookingTimeScreen({ route, navigation }) {
   
   const handleDateSelect = (date) => {
     setSelectedDate(date.dateString);
-    setSelectedTime(null); // Reset time when date changes
+    setSelectedTime(null);
   };
   
   const handleTimeSelect = async (time) => {
     setSlotCheckLoading(true);
     
     try {
-      // Double-check availability before selecting
       const isAvailable = await checkSlotAvailability(shopId, selectedDate, time, service.duration);
       
       if (!isAvailable) {
@@ -80,7 +73,6 @@ export default function EnhancedBookingTimeScreen({ route, navigation }) {
           "Sorry, this time slot has just been booked. Please select another time.",
           [{ text: "OK" }]
         );
-        // Reload available time slots
         loadAvailableTimeSlots(selectedDate, false);
         return;
       }
@@ -106,7 +98,6 @@ export default function EnhancedBookingTimeScreen({ route, navigation }) {
     }
     
     try {
-      // Final check if the slot is still available
       const isAvailable = await checkSlotAvailability(shopId, selectedDate, selectedTime, service.duration);
       
       if (!isAvailable) {
@@ -115,12 +106,9 @@ export default function EnhancedBookingTimeScreen({ route, navigation }) {
           "Sorry, this time slot has just been booked. Please select another time.",
           [{ text: "OK" }]
         );
-        // Reload available time slots
         loadAvailableTimeSlots(selectedDate, false);
         return;
       }
-      
-      // Check if booking is for today and within 2 hours
       const appointmentDateTime = moment(`${selectedDate} ${selectedTime}`, 'YYYY-MM-DD HH:mm');
       const now = moment();
       const hoursUntil = appointmentDateTime.diff(now, 'hours', true);
@@ -144,7 +132,6 @@ export default function EnhancedBookingTimeScreen({ route, navigation }) {
   };
   
   const proceedWithBooking = () => {
-    // Navigate to booking confirmation with all details
     navigation.navigate("BookingConfirmationScreen", {
       bookingDetails: {
         shopId,
@@ -160,12 +147,10 @@ export default function EnhancedBookingTimeScreen({ route, navigation }) {
     });
   };
   
-  // Format calendar marked dates
   const markedDates = {
     [selectedDate]: { selected: true, selectedColor: theme.colors.primary }
   };
   
-  // Group time slots by time periods for better organization
   const groupTimeSlots = (slots) => {
     const periods = {
       morning: { label: "Morning (8 AM - 12 PM)", slots: [] },
@@ -259,7 +244,6 @@ export default function EnhancedBookingTimeScreen({ route, navigation }) {
           </Card.Content>
         </Card>
         
-        {/* Booking Policy Warning */}
         <Card style={[styles.warningCard, { borderLeftColor: bookingWarning.color }]}>
           <Card.Content>
             <Text style={[styles.warningText, { color: bookingWarning.color }]}>

@@ -21,9 +21,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import moment from "moment";
 
 import { theme } from "../../core/theme";
-import { getBookingDetails, updateBookingStatus } from "../../../firebase/firebase";
+// FIX: Import from firebase instead of mock-data
+import { updateBookingStatus, getBookingDetails } from "../../../firebase/firebase";
 
-// Admin theme colors
 const adminTheme = {
   primary: '#8e44ad',
   primaryLight: '#F3E5F5',
@@ -139,7 +139,6 @@ export default function AdminBookingDetailsScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons name="arrow-left" size={24} color="#000" />
@@ -151,32 +150,172 @@ export default function AdminBookingDetailsScreen({ route, navigation }) {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Booking Status Card */}
-        <Surface style={styles.statusCard} elevation={2}>
-          <View style={styles.statusHeader}>
-            <View>
-              <Text style={styles.bookingId}>Booking #{bookingId.slice(-8)}</Text>
-              <Text style={styles.bookingDate}>
-                {moment(bookingDetails.date).format('MMMM D, YYYY')} at {bookingDetails.time}
-              </Text>
+        <Card style={styles.mainCard}>
+          <Card.Content>
+            <View style={styles.statusSection}>
+              <Text style={styles.sectionTitle}>Status</Text>
+              <Chip 
+                style={[styles.statusChip, { backgroundColor: getStatusColor(bookingDetails.status) + '20' }]}
+                textStyle={[styles.chipText, { color: getStatusColor(bookingDetails.status) }]}
+              >
+                {bookingDetails.status.toUpperCase()}
+              </Chip>
             </View>
-            
-            <Chip 
-              style={[styles.statusChip, { backgroundColor: getStatusColor(bookingDetails.status) + '20' }]}
-              textStyle={[styles.statusChipText, { color: getStatusColor(bookingDetails.status) }]}
-            >
-              {bookingDetails.status?.toUpperCase()}
-            </Chip>
-          </View>
 
+            <Divider style={styles.divider} />
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Appointment Details</Text>
+              
+              <View style={styles.detailRow}>
+                <MaterialCommunityIcons name="calendar" size={20} color={adminTheme.primary} />
+                <Text style={styles.detailLabel}>Date:</Text>
+                <Text style={styles.detailValue}>
+                  {moment(bookingDetails.date).format('MMMM DD, YYYY')}
+                </Text>
+              </View>
+
+              <View style={styles.detailRow}>
+                <MaterialCommunityIcons name="clock-outline" size={20} color={adminTheme.primary} />
+                <Text style={styles.detailLabel}>Time:</Text>
+                <Text style={styles.detailValue}>{bookingDetails.time}</Text>
+              </View>
+
+              <View style={styles.detailRow}>
+                <MaterialCommunityIcons name="store" size={20} color={adminTheme.primary} />
+                <Text style={styles.detailLabel}>Shop:</Text>
+                <Text style={styles.detailValue}>{bookingDetails.shopName}</Text>
+              </View>
+            </View>
+
+            <Divider style={styles.divider} />
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Service Details</Text>
+              
+              <View style={styles.serviceContainer}>
+                <Text style={styles.serviceName}>
+                  {bookingDetails.service?.name || bookingDetails.service || 'Standard Service'}
+                </Text>
+                {bookingDetails.services && bookingDetails.services.length > 0 && (
+                  <View style={styles.servicesList}>
+                    {bookingDetails.services.map((service, index) => (
+                      <Chip key={index} style={styles.serviceChip}>
+                        {service}
+                      </Chip>
+                    ))}
+                  </View>
+                )}
+              </View>
+
+              {bookingDetails.addOns && bookingDetails.addOns.length > 0 && (
+                <View style={styles.addOnsContainer}>
+                  <Text style={styles.addOnsTitle}>Add-ons:</Text>
+                  {bookingDetails.addOns.map((addOn, index) => (
+                    <Text key={index} style={styles.addOnItem}>
+                      • {addOn.name} - RM{addOn.price}
+                    </Text>
+                  ))}
+                </View>
+              )}
+
+              <View style={styles.priceRow}>
+                <Text style={styles.priceLabel}>Total Amount:</Text>
+                <Text style={styles.priceValue}>RM{bookingDetails.totalPrice}</Text>
+              </View>
+            </View>
+
+            <Divider style={styles.divider} />
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Customer Information</Text>
+              
+              <View style={styles.customerInfo}>
+                <View style={styles.detailRow}>
+                  <MaterialCommunityIcons name="account" size={20} color={adminTheme.primary} />
+                  <Text style={styles.detailLabel}>Name:</Text>
+                  <Text style={styles.detailValue}>{bookingDetails.customerName}</Text>
+                </View>
+
+                {bookingDetails.customerPhone && (
+                  <TouchableOpacity 
+                    style={styles.detailRow}
+                    onPress={() => handleCall(bookingDetails.customerPhone)}
+                  >
+                    <MaterialCommunityIcons name="phone" size={20} color={adminTheme.primary} />
+                    <Text style={styles.detailLabel}>Phone:</Text>
+                    <Text style={[styles.detailValue, styles.link]}>
+                      {bookingDetails.customerPhone}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+
+                {bookingDetails.customerEmail && (
+                  <TouchableOpacity 
+                    style={styles.detailRow}
+                    onPress={() => handleEmail(bookingDetails.customerEmail)}
+                  >
+                    <MaterialCommunityIcons name="email" size={20} color={adminTheme.primary} />
+                    <Text style={styles.detailLabel}>Email:</Text>
+                    <Text style={[styles.detailValue, styles.link]}>
+                      {bookingDetails.customerEmail}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+
+            <Divider style={styles.divider} />
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Vehicle Information</Text>
+              
+              <View style={styles.vehicleInfo}>
+                <View style={styles.detailRow}>
+                  <MaterialCommunityIcons name="car" size={20} color={adminTheme.primary} />
+                  <Text style={styles.detailLabel}>Vehicle:</Text>
+                  <Text style={styles.detailValue}>
+                    {bookingDetails.vehicleMake} {bookingDetails.vehicleModel}
+                  </Text>
+                </View>
+
+                <View style={styles.detailRow}>
+                  <MaterialCommunityIcons name="numeric" size={20} color={adminTheme.primary} />
+                  <Text style={styles.detailLabel}>Plate:</Text>
+                  <Text style={styles.detailValue}>{bookingDetails.vehiclePlate}</Text>
+                </View>
+
+                {bookingDetails.vehicleColor && (
+                  <View style={styles.detailRow}>
+                    <MaterialCommunityIcons name="palette" size={20} color={adminTheme.primary} />
+                    <Text style={styles.detailLabel}>Color:</Text>
+                    <Text style={styles.detailValue}>{bookingDetails.vehicleColor}</Text>
+                  </View>
+                )}
+              </View>
+            </View>
+
+            {bookingDetails.notes && (
+              <>
+                <Divider style={styles.divider} />
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Notes</Text>
+                  <Text style={styles.notes}>{bookingDetails.notes}</Text>
+                </View>
+              </>
+            )}
+          </Card.Content>
+        </Card>
+
+        <View style={styles.actionButtons}>
           {bookingDetails.status === 'pending' && (
-            <View style={styles.actionButtons}>
+            <>
               <Button
                 mode="contained"
                 onPress={() => handleStatusUpdate('confirmed')}
-                style={[styles.actionButton, { backgroundColor: '#10B981' }]}
                 loading={updateLoading}
-                disabled={updateLoading}
+                style={[styles.button, styles.confirmButton]}
+                contentStyle={styles.buttonContent}
               >
                 Confirm Booking
               </Button>
@@ -184,156 +323,41 @@ export default function AdminBookingDetailsScreen({ route, navigation }) {
               <Button
                 mode="outlined"
                 onPress={() => handleStatusUpdate('cancelled')}
-                style={styles.actionButton}
-                textColor="#EF4444"
                 loading={updateLoading}
-                disabled={updateLoading}
+                style={[styles.button, styles.cancelButton]}
+                contentStyle={styles.buttonContent}
+                textColor="#EF4444"
               >
-                Cancel
+                Cancel Booking
               </Button>
-            </View>
+            </>
           )}
 
           {bookingDetails.status === 'confirmed' && (
-            <Button
-              mode="contained"
-              onPress={() => handleStatusUpdate('completed')}
-              style={[styles.fullWidthButton, { backgroundColor: adminTheme.primary }]}
-              loading={updateLoading}
-              disabled={updateLoading}
-            >
-              Mark as Completed
-            </Button>
-          )}
-        </Surface>
-
-        {/* Customer Information */}
-        <Card style={styles.infoCard}>
-          <Card.Content>
-            <Text style={styles.sectionTitle}>Customer Information</Text>
-            <Divider style={styles.divider} />
-            
-            <View style={styles.infoRow}>
-              <MaterialCommunityIcons name="account" size={20} color={adminTheme.primary} />
-              <View style={styles.infoContent}>
-                <Text style={styles.infoLabel}>Name</Text>
-                <Text style={styles.infoValue}>{bookingDetails.customerName}</Text>
-              </View>
-            </View>
-            
-            <View style={styles.infoRow}>
-              <MaterialCommunityIcons name="email" size={20} color={adminTheme.primary} />
-              <View style={styles.infoContent}>
-                <Text style={styles.infoLabel}>Email</Text>
-                <Text style={styles.infoValue}>{bookingDetails.customerEmail || 'Not provided'}</Text>
-              </View>
-            </View>
-            
-            <View style={styles.infoRow}>
-              <MaterialCommunityIcons name="phone" size={20} color={adminTheme.primary} />
-              <View style={styles.infoContent}>
-                <Text style={styles.infoLabel}>Phone</Text>
-                <Text style={styles.infoValue}>{bookingDetails.customerPhone || 'Not provided'}</Text>
-              </View>
-            </View>
-
-            <View style={styles.contactButtons}>
+            <>
               <Button
-                mode="contained-tonal"
-                onPress={() => handleCall(bookingDetails.customerPhone)}
-                icon="phone"
-                style={styles.contactButton}
-                buttonColor={adminTheme.primaryLight}
-                textColor={adminTheme.primary}
+                mode="contained"
+                onPress={() => handleStatusUpdate('completed')}
+                loading={updateLoading}
+                style={[styles.button, styles.completeButton]}
+                contentStyle={styles.buttonContent}
               >
-                Call
+                Mark as Completed
               </Button>
               
               <Button
-                mode="contained-tonal"
-                onPress={() => handleEmail(bookingDetails.customerEmail)}
-                icon="email"
-                style={styles.contactButton}
-                buttonColor={adminTheme.primaryLight}
-                textColor={adminTheme.primary}
+                mode="outlined"
+                onPress={() => handleStatusUpdate('cancelled')}
+                loading={updateLoading}
+                style={[styles.button, styles.cancelButton]}
+                contentStyle={styles.buttonContent}
+                textColor="#EF4444"
               >
-                Email
+                Cancel Booking
               </Button>
-            </View>
-
-            <TouchableOpacity 
-              style={styles.viewCustomerLink}
-              onPress={() => navigation.navigate('AdminCustomerDetailsScreen', { 
-                customerId: bookingDetails.userId || bookingDetails.customerId 
-              })}
-            >
-              <Text style={styles.linkText}>View Customer Profile</Text>
-              <MaterialCommunityIcons name="chevron-right" size={20} color={adminTheme.primary} />
-            </TouchableOpacity>
-          </Card.Content>
-        </Card>
-
-        {/* Vehicle Information */}
-        <Card style={styles.infoCard}>
-          <Card.Content>
-            <Text style={styles.sectionTitle}>Vehicle Information</Text>
-            <Divider style={styles.divider} />
-            
-            <View style={styles.vehicleInfo}>
-              <MaterialCommunityIcons name="car" size={48} color={adminTheme.primary} />
-              <View style={styles.vehicleDetails}>
-                <Text style={styles.vehicleName}>
-                  {bookingDetails.vehicleMake} {bookingDetails.vehicleModel}
-                </Text>
-                <Text style={styles.vehiclePlate}>{bookingDetails.vehicleNumber}</Text>
-                <Text style={styles.vehicleType}>{bookingDetails.vehicleType || 'Standard'}</Text>
-              </View>
-            </View>
-          </Card.Content>
-        </Card>
-
-        {/* Service Details */}
-        <Card style={styles.infoCard}>
-          <Card.Content>
-            <Text style={styles.sectionTitle}>Service Details</Text>
-            <Divider style={styles.divider} />
-            
-            <View style={styles.servicesList}>
-              {bookingDetails.services?.map((service, index) => (
-                <View key={index} style={styles.serviceItem}>
-                  <MaterialCommunityIcons name="car-wash" size={20} color={adminTheme.primary} />
-                  <Text style={styles.serviceName}>{service}</Text>
-                </View>
-              ))}
-            </View>
-            
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Total Amount</Text>
-              <Text style={styles.priceValue}>RM{bookingDetails.totalPrice}</Text>
-            </View>
-            
-            {bookingDetails.isPaid && (
-              <Chip 
-                style={styles.paidChip}
-                textStyle={styles.paidChipText}
-                icon="check-circle"
-              >
-                Payment Received
-              </Chip>
-            )}
-          </Card.Content>
-        </Card>
-
-        {/* Additional Notes */}
-        {bookingDetails.notes && (
-          <Card style={styles.infoCard}>
-            <Card.Content>
-              <Text style={styles.sectionTitle}>Additional Notes</Text>
-              <Divider style={styles.divider} />
-              <Text style={styles.notesText}>{bookingDetails.notes}</Text>
-            </Card.Content>
-          </Card>
-        )}
+            </>
+          )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -358,12 +382,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   errorText: {
     fontSize: 18,
-    color: '#EF4444',
     marginTop: 16,
     marginBottom: 24,
+    color: '#EF4444',
   },
   header: {
     flexDirection: 'row',
@@ -383,167 +408,140 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  statusCard: {
+  mainCard: {
     margin: 16,
-    padding: 20,
     borderRadius: 12,
-    backgroundColor: '#fff',
+    elevation: 2,
   },
-  statusHeader: {
+  statusSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  bookingId: {
-    fontSize: 14,
-    color: adminTheme.primary,
-    fontWeight: '600',
-  },
-  bookingDate: {
-    fontSize: 16,
-    color: '#000',
-    marginTop: 4,
-  },
-  statusChip: {
-    height: 32,
-  },
-  statusChipText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    marginTop: 20,
-    gap: 12,
-  },
-  actionButton: {
-    flex: 1,
-    borderRadius: 8,
-  },
-  fullWidthButton: {
-    marginTop: 20,
-    borderRadius: 8,
-  },
-  infoCard: {
-    marginHorizontal: 16,
+    alignItems: 'center',
     marginBottom: 16,
-    borderRadius: 12,
-    backgroundColor: '#fff',
+  },
+  section: {
+    marginVertical: 16,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
-    color: '#000',
+    color: '#1F2937',
     marginBottom: 12,
+  },
+  statusChip: {
+    paddingHorizontal: 12,
+    height: 32,
+  },
+  chipText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   divider: {
     backgroundColor: '#E5E7EB',
-    marginBottom: 16,
+    marginVertical: 8,
   },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-  },
-  infoContent: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  infoLabel: {
-    fontSize: 12,
-    color: theme.colors.placeholder,
-  },
-  infoValue: {
-    fontSize: 15,
-    color: '#000',
-    marginTop: 2,
-  },
-  contactButtons: {
-    flexDirection: 'row',
-    marginTop: 16,
-    gap: 12,
-  },
-  contactButton: {
-    flex: 1,
-    borderRadius: 8,
-  },
-  viewCustomerLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 16,
-    paddingVertical: 8,
-  },
-  linkText: {
-    fontSize: 14,
-    color: adminTheme.primary,
-    fontWeight: '500',
-  },
-  vehicleInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  vehicleDetails: {
-    marginLeft: 16,
-    flex: 1,
-  },
-  vehicleName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
-  vehiclePlate: {
-    fontSize: 14,
-    color: adminTheme.primary,
-    marginTop: 2,
-  },
-  vehicleType: {
-    fontSize: 12,
-    color: '#6B7280',
-    marginTop: 2,
-  },
-  servicesList: {
-    marginBottom: 16,
-  },
-  serviceItem: {
+  detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
   },
-  serviceName: {
+  detailLabel: {
     fontSize: 14,
-    color: '#000',
+    color: '#6B7280',
     marginLeft: 12,
+    width: 80,
+  },
+  detailValue: {
+    fontSize: 14,
+    color: '#1F2937',
+    flex: 1,
+  },
+  link: {
+    color: adminTheme.primary,
+    textDecorationLine: 'underline',
+  },
+  serviceContainer: {
+    marginBottom: 12,
+  },
+  serviceName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  servicesList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 8,
+  },
+  serviceChip: {
+    marginRight: 8,
+    marginBottom: 8,
+    backgroundColor: adminTheme.primaryLight,
+  },
+  addOnsContainer: {
+    marginTop: 12,
+  },
+  addOnsTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+    marginBottom: 8,
+  },
+  addOnItem: {
+    fontSize: 14,
+    color: '#1F2937',
+    marginBottom: 4,
+    marginLeft: 8,
   },
   priceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 16,
+    marginTop: 16,
+    paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#F3F4F6',
+    borderTopColor: '#E5E7EB',
   },
   priceLabel: {
     fontSize: 16,
-    color: '#000',
+    fontWeight: '600',
+    color: '#1F2937',
   },
   priceValue: {
     fontSize: 20,
     fontWeight: '700',
     color: adminTheme.primary,
   },
-  paidChip: {
-    marginTop: 12,
-    backgroundColor: '#D1FAE5',
-    alignSelf: 'center',
+  customerInfo: {
+    marginTop: 8,
   },
-  paidChipText: {
-    color: '#10B981',
-    fontWeight: '500',
+  vehicleInfo: {
+    marginTop: 8,
   },
-  notesText: {
+  notes: {
     fontSize: 14,
-    color: '#4B5563',
+    color: '#6B7280',
     lineHeight: 20,
+  },
+  actionButtons: {
+    padding: 16,
+    paddingBottom: 32,
+  },
+  button: {
+    marginBottom: 12,
+    borderRadius: 8,
+  },
+  buttonContent: {
+    paddingVertical: 8,
+  },
+  confirmButton: {
+    backgroundColor: '#3B82F6',
+  },
+  completeButton: {
+    backgroundColor: '#10B981',
+  },
+  cancelButton: {
+    borderColor: '#EF4444',
   },
 });

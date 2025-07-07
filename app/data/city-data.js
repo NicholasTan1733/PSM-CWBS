@@ -31,7 +31,7 @@ export const shops = [
     closingHour: '18:00',
     description: 'Premium car wash service with state-of-the-art equipment and experienced staff',
     adminEmail: 'admin.selangor@swiftcarwash.com',
-    coordinates: { latitude: 3.0448, longitude: 101.5315 }, // Subang Jaya coordinates
+    coordinates: { latitude: 3.0448, longitude: 101.5315 },
     phone: '+60 3-5635 4321',
     facilities: ['Air Conditioning', 'Waiting Area', 'WiFi', 'Refreshments'],
   },
@@ -46,7 +46,7 @@ export const shops = [
     closingHour: '18:00',
     description: 'Specialized in car polish and detailing services with attention to detail',
     adminEmail: 'admin.johor@swiftcarwash.com',
-    coordinates: { latitude: 1.4849, longitude: 103.7618 }, // Permas Jaya coordinates
+    coordinates: { latitude: 1.4849, longitude: 103.7618 },
     phone: '+60 7-382 1234',
     facilities: ['Premium Detailing Bay', 'Customer Lounge', 'Valet Service'],
   },
@@ -61,13 +61,12 @@ export const shops = [
     closingHour: '18:00',
     description: 'Professional coating services that protect your car for months',
     adminEmail: 'admin.perlis@swiftcarwash.com',
-    coordinates: { latitude: 6.4414, longitude: 100.1986 }, // Kangar coordinates
+    coordinates: { latitude: 6.4414, longitude: 100.1986 },
     phone: '+60 4-976 5432',
     facilities: ['Express Service', 'Coating Specialist', 'Quick Turnaround'],
   },
 ];
 
-// Malaysian state coordinates (comprehensive list)
 export const stateCoordinates = {
   'selangor': { latitude: 3.0738, longitude: 101.5183 },
   'johor': { latitude: 1.4927, longitude: 103.7414 },
@@ -87,7 +86,6 @@ export const stateCoordinates = {
   'labuan': { latitude: 5.2767, longitude: 115.2417 },
 };
 
-// Shop coordinates for easy access
 export const shopCoordinates = {
   'selangor_premium': { latitude: 3.0448, longitude: 101.5315 },
   'johor_deluxe': { latitude: 1.4849, longitude: 103.7618 },
@@ -95,12 +93,11 @@ export const shopCoordinates = {
 };
 
 export const services = {
-  // Selangor Premium Car Wash services
   selangor_premium: [
     {
       id: 'normal_wash',
       name: 'Normal Wash',
-      duration: 30, // in minutes
+      duration: 30,
       price: 25.00,
       description: 'Exterior wash, tire cleaning, and basic interior vacuum.',
       icon: 'car-wash'
@@ -108,7 +105,7 @@ export const services = {
     {
       id: 'water_wax_wash',
       name: 'Water Wax Wash',
-      duration: 30, // in minutes
+      duration: 30,
       price: 35.00,
       description: 'Normal wash plus water-based wax for added shine and protection.',
       icon: 'shimmer'
@@ -116,19 +113,18 @@ export const services = {
     {
       id: 'nano_ceramic_wash',
       name: 'Nano Ceramic Wash',
-      duration: 45, // in minutes
+      duration: 45,
       price: 45.00,
       description: 'Advanced wash with nano ceramic coating for superior protection.',
       icon: 'car-wash'
     }
   ],
   
-  // Johor Deluxe Car Wash services
   johor_deluxe: [
     {
       id: 'standard_wash',
       name: 'Standard Wash',
-      duration: 30, // in minutes
+      duration: 30,
       price: 25.00,
       description: 'Basic exterior wash with wheel cleaning.',
       icon: 'car-wash'
@@ -136,7 +132,7 @@ export const services = {
     {
       id: 'premium_polish',
       name: 'Premium Polish & Detail',
-      duration: 60, // in minutes
+      duration: 60,
       price: 90.00,
       description: 'Comprehensive polish with paint correction and detailed interior cleaning.',
       icon: 'shimmer'
@@ -144,19 +140,18 @@ export const services = {
     {
       id: 'executive_detail',
       name: 'Executive Detail Package',
-      duration: 90, // in minutes
+      duration: 90,
       price: 150.00,
       description: 'Complete detail service with premium wax and leather conditioning.',
       icon: 'car-wash'
     }
   ],
   
-  // Perlis Express Car Spa services
   perlis_express: [
     {
       id: 'express_wash',
       name: 'Express Wash',
-      duration: 20, // in minutes
+      duration: 20,
       price: 20.00,
       description: 'Quick exterior wash for people on the go.',
       icon: 'car-wash'
@@ -164,7 +159,7 @@ export const services = {
     {
       id: 'premium_coating',
       name: 'Premium Coating',
-      duration: 120, // in minutes (2 hours)
+      duration: 120,
       price: 200.00,
       description: 'Professional-grade ceramic coating with 6-month protection.',
       icon: 'shimmer'
@@ -172,7 +167,7 @@ export const services = {
     {
       id: 'diamond_coating',
       name: 'Diamond Coating Package',
-      duration: 180, // in minutes (3 hours)
+      duration: 180,
       price: 350.00,
       description: 'Top-tier coating with 12-month protection and full interior detail.',
       icon: 'car-wash'
@@ -180,7 +175,6 @@ export const services = {
   ]
 };
 
-// Add-on services are common across all shops
 export const addOns = [
   {
     id: 'tire_shine',
@@ -208,9 +202,9 @@ export const addOns = [
   }
 ];
 
-// Location utility functions
+//degrees to radians
 export const calculateDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // Radius of the Earth in kilometers
+  const R = 6371;
   const dLat = deg2rad(lat2 - lat1);
   const dLon = deg2rad(lon2 - lon1);
   const a = 
@@ -218,7 +212,7 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
     Math.sin(dLon/2) * Math.sin(dLon/2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  const d = R * c; // Distance in kilometers
+  const d = R * c;
   return d;
 };
 
@@ -226,7 +220,6 @@ const deg2rad = (deg) => {
   return deg * (Math.PI/180);
 };
 
-// Find nearest shop from user location
 export const findNearestShop = (userCoords, shopList = shops) => {
   let nearestShop = null;
   let shortestDistance = Infinity;
@@ -250,7 +243,6 @@ export const findNearestShop = (userCoords, shopList = shops) => {
   return nearestShop;
 };
 
-// Find nearest city from user location
 export const findNearestCity = (userCoords, cityList = cities) => {
   let nearestCity = null;
   let shortestDistance = Infinity;

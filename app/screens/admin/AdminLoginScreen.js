@@ -33,7 +33,6 @@ export default function AdminLoginScreen({ navigation }) {
     setLoading(true);
     
     try { 
-      // Check if this is an admin account
       const adminData = await loginAsAdmin(email.value, password.value);
       
       if (adminData) {
@@ -49,8 +48,6 @@ export default function AdminLoginScreen({ navigation }) {
     } catch (error) {
       setLoading(false);
       console.log("Admin login error:", error.code, error.message);
-      
-      // Handle specific error cases
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
         setGeneralError("Invalid email or password. Please try again.");
       } else if (error.code === 'auth/too-many-requests') {
