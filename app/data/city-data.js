@@ -203,6 +203,10 @@ export const addOns = [
 ];
 
 //degrees to radians
+//Haversine formula
+/*360 degrees = 2π radians
+180 degrees = π radians
+1 degree = π/180 radians*/
 export const calculateDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371;
   const dLat = deg2rad(lat2 - lat1);
