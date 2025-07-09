@@ -180,7 +180,10 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
     setRefreshing(false);
   };
 
-  const formatCurrency = (amount) => `RM${amount.toLocaleString()}`;
+  const formatCurrency = (amount) => {
+    const numAmount = parseFloat(amount) || 0;
+    return `RM${numAmount.toFixed(2)}`;
+  };
 
   if (loading) {
     return (
@@ -270,7 +273,7 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
                     return (
                       <View key={index} style={styles.chartColumn}>
                         <Text style={styles.chartValue}>
-                          {value > 0 ? `RM${value}` : ''}
+                           {value > 0 ? formatCurrency(value) : ''}
                         </Text>
                         <View style={styles.barContainer}>
                           <View 

@@ -138,10 +138,6 @@ export default function AdminBookingHistoryScreen({ navigation }) {
     }
   };
 
-  const exportData = () => {
-    alert("Export feature will generate a CSV file of booking history");
-  };
-
   const renderBookingItem = ({ item }) => (
     <Surface style={styles.bookingCard} elevation={1}>
       <TouchableOpacity 
@@ -223,9 +219,7 @@ export default function AdminBookingHistoryScreen({ navigation }) {
         
         <Text style={styles.headerTitle}>Booking History</Text>
         
-        <TouchableOpacity onPress={exportData}>
-          <MaterialCommunityIcons name="download" size={24} color={adminTheme.primary} />
-        </TouchableOpacity>
+        <View style={{ width: 24 }} />
       </View>
       <ScrollView 
         horizontal 
