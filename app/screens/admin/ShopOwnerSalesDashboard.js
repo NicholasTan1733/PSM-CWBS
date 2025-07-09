@@ -89,9 +89,12 @@ export default function ShopOwnerSalesDashboard({ navigation }) {
       booking.status === 'completed'
     );
 
-    const totalRevenue = Math.round(filteredBookings.reduce((sum, b) => sum + (b.totalAmount || 0), 0) * 100) / 100;
+    const totalRevenue = parseFloat(
+      filteredBookings.reduce((sum, b) => sum + (parseFloat(b.totalAmount) || 0), 0).toFixed(2)
+    );
     const totalBookings = filteredBookings.length;
-    const averageTicket = totalBookings > 0 ? Math.round((totalRevenue / totalBookings) * 100) / 100 : 0;
+    const averageTicket = totalBookings > 0 ? 
+      parseFloat((totalRevenue / totalBookings).toFixed(2)) : 0;
     const allBookingsInRange = bookingsData.filter(booking => 
       moment(booking.date).isAfter(startDate)
     );
