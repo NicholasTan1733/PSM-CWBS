@@ -21,7 +21,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import moment from "moment";
 
 import { theme } from "../../core/theme";
-// FIX: Import from firebase instead of mock-data
 import { updateBookingStatus, getBookingDetails } from "../../../firebase/firebase";
 
 const adminTheme = {
